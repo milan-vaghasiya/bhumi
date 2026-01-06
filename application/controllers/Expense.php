@@ -32,7 +32,7 @@ class Expense extends MY_Controller{
         $result = $this->expense->getExpenseDTRows($data);
         $sendData = array();$i=($data['start'] + 1);
         foreach($result['data'] as $row):
-            $row->sr_no = $i++;
+            $row->sr_no = $i++; 
             $row->is_approve_button_show = (!in_array($this->userRole,[1,-1]) && $this->loginId == $row->exp_by_id) ? false : true;
             $sendData[] = getExpenseData($row);
         endforeach;
