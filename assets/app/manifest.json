@@ -1,0 +1,62 @@
+{
+    "name": "Bhumi Irrigation",
+    "short_name": "Bhumi Irrigation",
+    "start_url": "https://bhumi.nativebittechnologies.in/app",
+	"id":"bhumi_app",
+    "display": "standalone",
+    "scope" : "https://bhumi.nativebittechnologies.in/app",
+    "background_color": "#FFFFFF",
+    "theme_color": "#000000",
+    "orientation": "portrait",
+	"description": "Bhumi Irrigation: Delivering the Power of Perfect Irrigation",
+    "icons": [
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/72.png",
+            "type": "image/png",
+            "sizes": "72x72",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/96.png",
+            "type": "image/png",
+            "sizes": "96x96",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/128.png",
+            "type": "image/png",
+            "sizes": "128x128",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/144.png",
+            "type": "image/png",
+            "sizes": "144x144",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/152.png",
+            "type": "image/png",
+            "sizes": "152x152",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/256.png",
+            "type": "image/png",
+            "sizes": "256x256",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://bhumi.nativebittechnologies.in/assets/app/images/icons/512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any maskable"
+        }
+    ]
+}
