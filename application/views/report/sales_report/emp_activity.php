@@ -47,59 +47,82 @@
     </div>
 </div>
 <?php $this->load->view('includes/footer'); ?>
-<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=<?=$API_KEY?>&amp;callback=initMap"></script>
+
 <script>
 	var map;
-	var waypoints;
 	var directionsService;
 	var directionsDisplay;
-	$(document).ready(function(){
-		$(".drawPath").on("click",function() {
-				$(".error").html("");
-				var valid = 1;
-				var activity_date = $('#activity_date').val();
-				var emp_id = $('#emp_id').val();
-				if($("#activity_date").val() == ""){$(".activity_date").html("Date is required.");valid=0;}
-				if($("#emp_id").val() == ""){$(".emp_id").html("Employee is required.");valid=0;}
-				if(valid)
-				{
-					$.ajax({
-						url: base_url + controller + '/getEmpActivity',
-						data: {activity_date:activity_date, emp_id:emp_id},
-						type: "POST",
-						dataType:'json',
-						success:function(res){
-							if(res.status == 1)
-							{
-								resetMap();
-								activityLog = res.activityLog;
-								$('.activityLog').html(activityLog);
-								var locationLog = res.locationLog;
-								initMap(locationLog);
-							}
-						}
-					});
-				}
-		});
-	});
-	
-	function initMap(locationLog = {}) {
+
+	function initMap() {
 		var mapLayer = document.getElementById("map-layer"); 
 		var centerCoordinates = new google.maps.LatLng(28.6139, 77.2090);
 		var defaultOptions = { center: centerCoordinates, zoom: 8 }
 		map = new google.maps.Map(mapLayer, defaultOptions);
 
-		var directionsService = new google.maps.DirectionsService;
-		var directionsDisplay = new google.maps.DirectionsRenderer;
+		directionsService = new google.maps.DirectionsService;
+		directionsDisplay = new google.maps.DirectionsRenderer;
 		directionsDisplay.setMap(map);
 
-		if(locationLog.length > 0){
-			var start = locationLog[0];
-			var end = locationLog[(locationLog.length)-1];
-			drawPath(directionsService, directionsDisplay,start,end,waypoints);
-		}
+		$(".drawPath").on("click",function() {
+			resetMapView();
+			$(".error").html("");
+			var valid = 1;
+			var activity_date = $('#activity_date').val();
+			var emp_id = $('#emp_id').val();
+			if($("#activity_date").val() == ""){$(".activity_date").html("Date is required.");valid=0;}
+			if($("#emp_id").val() == ""){$(".emp_id").html("Employee is required.");valid=0;}
+			if(valid)
+			{
+				$.ajax({
+					url: base_url + controller + '/getEmpActivity',
+					data: {activity_date:activity_date, emp_id:emp_id},
+					type: "POST",
+					dataType:'json',
+					success:function(res){
+						if(res.status == 1)
+						{
+							$(".total_distance").html("TOTAL DISTANCE : " + res.totalDistance + " KM");
+							activityLog = res.activityLog;
+							$('.activityLog').html(activityLog);
+							var locationLog = res.locationLog;
+							waypoints = Array();
+							var logData = jQuery.parseJSON(locationLog);
+							var i=1;
+							$.each(logData, function(key, item) 
+							{
+								if(item && i <= 25){ 
+									waypoints.push({location: item,stopover: true});
+									i++;
+								}
+							});
+							
+							var locationCount = waypoints.length;
+							if(locationCount > 0) {
+								var start1 = waypoints[0].location;
+								var end1 = waypoints[locationCount-1].location;
+								drawPath(directionsService, directionsDisplay,start1,end1,waypoints);
+							}
+						}
+					}
+				});
+			}
+		});
 	}
 	
+	function resetMapView() {
+		var mapLayer = document.getElementById("map-layer"); 
+		var centerCoordinates = new google.maps.LatLng(28.6139, 77.2090);
+		var defaultOptions = { center: centerCoordinates, zoom: 8 }
+		map = new google.maps.Map(mapLayer, defaultOptions);
+
+		directionsService = new google.maps.DirectionsService;
+		directionsDisplay = new google.maps.DirectionsRenderer;
+		directionsDisplay.setMap(map);
+		
+		map.setCenter(centerCoordinates);
+		map.setZoom(8);
+	}
+
 	function drawPath(directionsService, directionsDisplay,start,end,waypoints) {
 		directionsService.route({
 		  origin: start,
@@ -111,20 +134,5 @@
 			directionsDisplay.setDirections(response);
 		});
 	}
-	
-	function resetMap(){
-		if(directionsDisplay){
-			directionsDisplay.setDirections({ routes: [] });  // Clear any routes
-		}
-		if(map){
-			var mapLayer = document.getElementById("map-layer"); 
-			var centerCoordinates = new google.maps.LatLng(28.6139, 77.2090);
-			var defaultOptions = { center: centerCoordinates, zoom: 8 }
-			map = new google.maps.Map(mapLayer, defaultOptions);
-
-			var directionsService = new google.maps.DirectionsService;
-			var directionsDisplay = new google.maps.DirectionsRenderer;
-			directionsDisplay.setMap(map);
-		}
-	}
 </script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=<?=$API_KEY?>&amp;callback=initMap"></script>

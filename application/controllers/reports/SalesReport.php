@@ -37,6 +37,7 @@ class SalesReport extends MY_Controller
         if(!empty($errorMessage)):
             $this->printJson(['status'=>0,'message'=>$errorMessage]);
         else:
+			$prevLocation ="";$totalDistance = 0;
             $logData = $this->locationLog->getLocationLogs($data['activity_date'],$data['emp_id']);
 			$activityLog = '';$locationLog = Array();$letterPoint = 'B';$tp = ['','Check In','Check Out','Visit Start','Visit End'];
             if(!empty($logData))
@@ -46,6 +47,12 @@ class SalesReport extends MY_Controller
 					$activityTime = date('d M Y H:i:s',strtotime($row->log_time));
 					$title = (!empty($row->party_name)) ? $row->party_name : $tp[$row->log_type];
 					$tpText = (!in_array($row->log_type,[1,2])) ? '<span class="float-end" style="width:15%">'.$tp[$row->log_type].'</span>' : '';
+					$distance = 0;	
+					if(!empty($row->location) AND !empty($prevLocation)):
+						$distance = getDistanceOpt($prevLocation,$row->location);
+					endif;
+					$totalDistance += $distance;
+					$prevLocation = $row->location;
 					$activityLog .= '<div class="activity-info">
                                         <div class="icon-info-activity"><i class="fas fa-map-marker-alt1 bg-soft-danger">'.$letterPoint.'</i></div>
                                         <div class="activity-info-text mt-1">
@@ -54,17 +61,18 @@ class SalesReport extends MY_Controller
                                                 '.$tpText.'
                                             </div>
                                             <h5 class="text-muted fs-12"><i class="fas fa-clock"></i> '.$activityTime.'</h5>
-                                            <p class="text-muted fs-12">'.$row->address.'</p>
+                                            <p class="text-muted fs-12">'.$row->address.'<br>'.$row->location.'</p>
+											<span class="text-warning" style="width:15%">[ Distance : '.$totalDistance.' Km. ]</span>
                                         </div>
                                     </div>';
 					$locationLog[] = $row->location;
 					$letterPoint++;
 				}
 			}
-			$this->printJson(['status'=>1, 'locationLog'=>$locationLog,'activityLog'=>$activityLog]);
+            $this->printJson(['status'=>1, 'locationLog'=>json_encode($locationLog),'activityLog'=>$activityLog, 'totalDistance'=>round($totalDistance,2)]);
         endif;
     }
-
+    
     /* Visit History Report */
 	public function visitHistory(){
         $this->data['pageHeader'] = 'VISIT HISTORY';

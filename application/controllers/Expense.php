@@ -33,6 +33,7 @@ class Expense extends MY_Controller{
         $sendData = array();$i=($data['start'] + 1);
         foreach($result['data'] as $row):
             $row->sr_no = $i++;
+            $row->is_approve_button_show = (!in_array($this->userRole,[1,-1]) && $this->loginId == $row->exp_by_id) ? false : true;
             $sendData[] = getExpenseData($row);
         endforeach;
         $result['data'] = $sendData;
@@ -112,8 +113,10 @@ class Expense extends MY_Controller{
     public function edit(){
         $data = $this->input->post(); 
         $this->data['dataRow'] = $dataRow = $this->expense->getExpense($data);
-        $this->data['expTransData'] = $this->expense->getExpenseTransData(['exp_id' => $dataRow->id]);
-        $this->data['expTypeList'] = $this->configuration->getSelectOptionList(['type'=>3,'calc_type'=>'MANUAL']);
+        $this->data['expTransData'] = $expTransData = $this->expense->getExpenseTransData(['exp_id' => $dataRow->id]);
+        $exp_type_id = !empty($expTransData) ? array_column($this->data['expTransData'], 'exp_type_id') : [];
+
+        $this->data['expTypeList'] = $this->configuration->getSelectOptionList(['type'=>3,'calc_type'=>'MANUAL','exp_type_id' => $exp_type_id,'all'=>1]);
         $this->data['empList'] = $this->usersModel->getEmployeeList();
    
 		$empData = $this->usersModel->getEmployeeList();
@@ -539,21 +542,26 @@ class Expense extends MY_Controller{
             $mpdf->AddPage('L','','','','',5,5,15,10,3,3,'','','','','','','','','','A4-L');
             $mpdf->WriteHTML($pdfData);	
 			
-			$proofArr = array_unique(array_column($expData,'proof_file'));
+			$proofArr = array_filter(array_unique(array_column($expData,'proof_file')));
 			$mediaHtml = '';$m=0;
 			if(!empty($proofArr))
 			{
-				$mediaHtml = '<table class="table" style="width:100%;border-collapse:collapse;"><tr>';
-				foreach($proofArr as $key=>$proof_file)
-				{
-					if(!empty($proof_file)){
-						if($m%2==0 AND $m > 0){$mediaHtml .= '</tr><tr>';}
-						$mediaHtml .= '<td style="width:25%;text-align:center;border:1px solid #000000;font-size:12px;" align="center">
-							<img src="'.base_url('assets/uploads/expense/'.$proof_file).'" style="width:200px;height:200px;border:1px solid #000000;border-radius:10px;" >
-						</td>';
-						$m++;
-					}
-				}
+                $totalImages = count($proofArr);
+				$mediaHtml = '<table class="table" style="width:100%;border-collapse:collapse;"><tr>';                
+                foreach ($proofArr as $proof_file) {
+                    if (!empty($proof_file)) {
+                        $mediaHtml .= '
+                        <td width="50%" align="center">
+                            <img src="' . base_url('assets/uploads/expense/' . $proof_file) . '" style="border:1px solid #000;border-radius:10px;">
+                        </td>';
+                        $m++;
+
+                        if ($m % 2 == 0 && $m < $totalImages) {
+                            $mediaHtml .= '</tr></table><pagebreak /><table width="100%" cellpadding="10"><tr>';
+                        }
+                    }
+                }
+
 				$mediaHtml .= '</tr></table>';
 				$mpdf->AddPage('L','','','','',5,5,15,10,3,3,'','','','','','','','','','A4-L');
                 $mpdf->WriteHTML($mediaHtml);

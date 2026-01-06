@@ -172,16 +172,20 @@ function getAttendanceData($data){
         $CI = & get_instance();
         $userRole = $CI->session->userdata('role');
         if($userRole == 4):
-            $approveParam = "{'postData':{'id':".$data->id.",'attendance_status' : 3},'message':'Are you sure want to Approve this Attendance?','fnsave':'approveAttendance'}";
-            $approveButton = '<a href="javascript:void(0)" class="btn btn-success permission-approve" onclick="confirmStore('.$approveParam.');" datatip="Approve" flow="down"><i class="fa fa-check"></i></a>';
+            if($data->is_approve_button_show){
+                $approveParam = "{'postData':{'id':".$data->id.",'attendance_status' : 3},'message':'Are you sure want to Approve this Attendance?','fnsave':'approveAttendance'}";
+                $approveButton = '<a href="javascript:void(0)" class="btn btn-success permission-approve" onclick="confirmStore('.$approveParam.');" datatip="Approve" flow="down"><i class="fa fa-check"></i></a>';
+            }
 
             $rejectParam = "{'postData':{'id':".$data->id." ,'attendance_status' : 2},'message':'Are you sure want to Rejct this Attendance?','fnsave':'approveAttendance'}";
             $rejectButton = '<a href="javascript:void(0)" class="btn btn-dark permission-approve" onclick="confirmStore('.$rejectParam.');" datatip="Reject" flow="down"><i class="fa fa-close"></i></a>';
         endif;
     }else{
         if(empty($data->approve_by)):
-            $approveParam = "{'postData':{'id':".$data->id." ,'attendance_status' : 1},'message':'Are you sure want to Approve this Attendance?','fnsave':'approveAttendance'}";
-            $approveButton = '<a href="javascript:void(0)" class="btn btn-success permission-approve" onclick="confirmStore('.$approveParam.');" datatip="Approve" flow="down"><i class="fa fa-check"></i></a>';
+            if($data->is_approve_button_show){
+                $approveParam = "{'postData':{'id':".$data->id." ,'attendance_status' : 1},'message':'Are you sure want to Approve this Attendance?','fnsave':'approveAttendance'}";
+                $approveButton = '<a href="javascript:void(0)" class="btn btn-success permission-approve" onclick="confirmStore('.$approveParam.');" datatip="Approve" flow="down"><i class="fa fa-check"></i></a>';
+            }
 
             $rejectParam = "{'postData':{'id':".$data->id." ,'attendance_status' : 2},'message':'Are you sure want to Rejct this Attendance?','fnsave':'approveAttendance'}";
             $rejectButton = '<a href="javascript:void(0)" class="btn btn-dark permission-approve" onclick="confirmStore('.$rejectParam.');" datatip="Reject" flow="down"><i class="fa fa-close"></i></a>';

@@ -1,0 +1,31 @@
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+.idea/
+.vscode/
+nbproject/
+
+# Composer
+/vendor/
+composer.lock
+
+# CodeIgniter specific
+/application/cache/*
+!/application/cache/index.html
+/application/logs/*
+!/application/logs/index.html
+/application/config/constants.php
+/application/config/database.php
+
+# Environment specific
+.env
+.env.*.local
+
+# Other generated files
+/assets/uploads/*
+!/assets/uploads/index.html

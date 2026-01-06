@@ -227,6 +227,11 @@ class ConfigurationModel extends MasterModel{
             $queryData['select'] = "select_master.id, select_master.label, select_master.type, select_master.is_travel, select_master.price_km, select_master.calc_type, select_master.remark";
             $queryData['where']['type'] = $data['type'];
             if(!empty($data['calc_type'])){$queryData['where']['select_master.calc_type'] = $data['calc_type'];}
+
+            if(!empty($data['all'])){
+                $queryData['where_in']['id'] = $data['exp_type_id'];
+                $queryData['all']['select_master.is_delete'] = [0,1];
+            }
             return $this->rows($queryData);
         }
 

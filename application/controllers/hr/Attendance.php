@@ -301,6 +301,7 @@ class Attendance extends MY_Controller{
 			endif;
 			*/
 			$row->status = $data['status'];
+            $row->is_approve_button_show = (!in_array($this->userRole,[1,-1]) && $this->loginId == $row->emp_id) ? false : true;
 			$sendData[] = getAttendanceData($row);
 		endforeach;
 		//exit;

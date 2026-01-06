@@ -243,8 +243,10 @@ function getExpenseData($data){
         $editParam = "{'postData':{'id' : ".$data->id."},'modal_id' : 'right_modal', 'form_id' : 'editExpense', 'title' : 'Update Expense'}";
         $editButton = '<a class="btn btn-success btn-edit permission-modify" href="javascript:void(0)" datatip="Edit" flow="down" onclick="edit('.$editParam.');"><i class="mdi mdi-square-edit-outline"></i></a>';
 
-        $approveParam = "{'postData':{'id' : ".$data->id."},'modal_id' : 'right_modal_lg', 'form_id' : 'editExpense', 'title' : 'Approve Expense ','fnedit' : 'getApprovedData' , 'fnsave' : 'saveApprovedData'}";
-        $approveButton = '<a class="btn btn-primary btn-edit permission-approve" href="javascript:void(0)" datatip="Approve" flow="down" onclick="edit('.$approveParam.');"><i class="mdi mdi-check"></i></a>';
+        if($data->is_approve_button_show){
+            $approveParam = "{'postData':{'id' : ".$data->id."},'modal_id' : 'right_modal_lg', 'form_id' : 'editExpense', 'title' : 'Approve Expense ','fnedit' : 'getApprovedData' , 'fnsave' : 'saveApprovedData'}";
+            $approveButton = '<a class="btn btn-primary btn-edit permission-approve" href="javascript:void(0)" datatip="Approve" flow="down" onclick="edit('.$approveParam.');"><i class="mdi mdi-check"></i></a>';
+        }
 
         $rejectParam = "{'postData': {'id' : ".$data->id.", 'status' : 2,'exp_source':".$data->exp_source."}, 'fnsave' : 'rejectExpense', 'message' : 'Are you sure want to Reject Expense?'}";//27-09-25
         $rejectButton = '<a class="btn btn-warning btn-edit permission-approve" href="javascript:void(0)" datatip="Reject" flow="down" onclick="confirmStore('.$rejectParam.');"><i class="mdi mdi-close"></i></a>';
